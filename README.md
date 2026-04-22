@@ -1,3 +1,13 @@
+---
+title: Nora Nexora
+emoji: 🤖
+colorFrom: indigo
+colorTo: purple
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # 🤖 Nexora Visual — Nora Assistant
 
 > Asistente Virtual de IA para automatización administrativa y comercial, desplegada 24/7 en Telegram.

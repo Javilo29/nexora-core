@@ -1,12 +1,13 @@
 """
 NEXORA_CORE — nora_bot.py
 =========================
-Bot principal de Nora v1.0 — Polling 24/7
-Plataforma objetivo: FPS.ms (o cualquier servidor con Python 3.11+)
+Bot principal de Nora v13.0 — Polling 24/7
+Plataforma objetivo: Hugging Face Spaces / Render / cualquier servidor con Python 3.11+
 
 Responsabilidades:
 - Inicializar cliente Groq con credenciales de entorno.
 - Registrar handlers de Telegram.
+- Lanzar servidor de health check (puerto 7860 para HF Spaces).
 - Lanzar polling infinito.
 """
 
@@ -124,13 +125,40 @@ async def handle_photo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 
 
 # ---------------------------------------------------------------------------
+# Servidor de Health Check (para Hugging Face Spaces / Render)
+# ---------------------------------------------------------------------------
+from flask import Flask
+import threading
+
+health_app = Flask(__name__)
+
+
+@health_app.route("/", methods=["GET"])
+def health():
+    """Health check — HF Spaces necesita un endpoint activo en puerto 7860."""
+    return "Nora esta activa — Nora v13.0 NEXORA_CORE", 200
+
+
+def run_health_server():
+    """Lanza el servidor Flask en un hilo separado."""
+    port = int(os.getenv("PORT", 7860))
+    logger.info(f"🌐 Health server iniciado en puerto {port}")
+    health_app.run(host="0.0.0.0", port=port, debug=False, use_reloader=False)
+
+
+# ---------------------------------------------------------------------------
 # Main — Polling 24/7
 # ---------------------------------------------------------------------------
 
 def main() -> None:
-    """Punto de entrada principal. Lanza el bot en modo polling."""
-    logger.info("🚀 Nora v1.0 | NEXORA_CORE | Iniciando polling...")
+    """Punto de entrada principal. Lanza health server + bot en modo polling."""
+    logger.info("🚀 Nora v13.0 | NEXORA_CORE | Iniciando...")
 
+    # Lanzar health server en hilo de fondo
+    health_thread = threading.Thread(target=run_health_server, daemon=True)
+    health_thread.start()
+
+    # Lanzar bot de Telegram
     application = Application.builder().token(BOT_TOKEN).build()
 
     application.add_handler(CommandHandler("start", start))
@@ -143,3 +171,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

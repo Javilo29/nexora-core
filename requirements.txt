@@ -3,3 +3,4 @@ pillow
 groq
 requests
 python-dotenv
+flask

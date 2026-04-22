@@ -8,20 +8,20 @@ updates via Webhook (no polling). PythonAnywhere requiere una Web App
 con WSGI para operar 24/7 de forma gratuita.
 
 Rutas asumidas en PythonAnywhere:
-  - Proyecto: /home/javilo29/NEXORA_CORE
-  - .env:      /home/javilo29/.env
+  - Proyecto: /home/javilo2/nexora-core
+  - .env:      /home/javilo2/nexora-core/.env
 """
 
 import sys
 import os
 from dotenv import load_dotenv
 
-# Cargar variables de entorno desde el .env del home de PythonAnywhere
-dotenv_path = '/home/javilo29/.env'
+# Cargar variables de entorno desde el .env dentro del proyecto
+dotenv_path = '/home/javilo2/nexora-core/.env'
 load_dotenv(dotenv_path)
 
 # Agregar el proyecto al path de Python
-path = '/home/javilo29/NEXORA_CORE'
+path = '/home/javilo2/nexora-core'
 if path not in sys.path:
     sys.path.insert(0, path)
 
@@ -54,8 +54,17 @@ ptb_app.add_handler(MessageHandler(tg_filters.TEXT & ~tg_filters.COMMAND, handle
 flask_app = Flask(__name__)
 
 @flask_app.route(f"/{BOT_TOKEN}", methods=["POST"])
-def webhook():
-    """Endpoint que recibe los updates de Telegram vía Webhook."""
+def webhook_token():
+    """Endpoint que recibe los updates de Telegram vía Webhook (ruta con token)."""
+    return _process_update()
+
+@flask_app.route("/", methods=["POST"])
+def webhook_root():
+    """Endpoint que recibe los updates de Telegram vía Webhook (ruta raíz)."""
+    return _process_update()
+
+def _process_update():
+    """Procesa un update de Telegram entrante."""
     json_data = request.get_json(force=True)
     update = Update.de_json(json_data, ptb_app.bot)
     asyncio.run(ptb_app.process_update(update))

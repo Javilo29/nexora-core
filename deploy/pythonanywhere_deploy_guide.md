@@ -21,7 +21,7 @@ PythonAnywhere ofrece hosting gratuito de Web Apps Python con:
 ## Paso 1 — Crear cuenta en PythonAnywhere
 
 1. Ve a [https://www.pythonanywhere.com/registration/register/beginner/](https://www.pythonanywhere.com/registration/register/beginner/)
-2. Elige un **username** (este será parte de tu URL, ej: `javilo29`)
+2. Elige un **username** (este será parte de tu URL, ej: `javilo2`)
 3. Completa el registro — **no necesitas tarjeta de crédito**
 4. Confirma tu correo electrónico
 
@@ -45,7 +45,7 @@ git clone https://github.com/TU_USUARIO/NEXORA_CORE.git
 ```
 
 > Reemplaza `TU_USUARIO` con tu usuario de GitHub.  
-> El proyecto quedará en `/home/javilo29/NEXORA_CORE/`
+> El proyecto quedará en `/home/javilo2/NEXORA_CORE/`
 
 ---
 
@@ -79,7 +79,7 @@ El archivo `.env` contiene tus tokens secretos y **NO está en GitHub** (está e
 ### Opción A — Desde el Editor de Archivos (recomendado)
 
 1. En el Dashboard, ve a **"Files"**
-2. Navega a tu directorio home: `/home/javilo29/`
+2. Navega a tu directorio home: `/home/javilo2/`
 3. Haz clic en **"Upload a file"**
 4. Sube tu archivo `.env` con el siguiente contenido:
 
@@ -119,15 +119,15 @@ EOF
 
 ### Source code
 ```
-/home/javilo29/NEXORA_CORE
+/home/javilo2/NEXORA_CORE
 ```
 
 ### WSGI configuration file
-Haz clic en el enlace del archivo WSGI (algo como `/var/www/javilo29_pythonanywhere_com_wsgi.py`) y **reemplaza TODO su contenido** con:
+Haz clic en el enlace del archivo WSGI (algo como `/var/www/javilo2_pythonanywhere_com_wsgi.py`) y **reemplaza TODO su contenido** con:
 
 ```python
 import sys
-sys.path.insert(0, '/home/javilo29/NEXORA_CORE')
+sys.path.insert(0, '/home/javilo2/NEXORA_CORE')
 
 from wsgi import application
 ```
@@ -143,7 +143,7 @@ pip install -r ~/NEXORA_CORE/requirements.txt flask
 ```
 Y en la sección "Virtualenv" de la Web App, pon:
 ```
-/home/javilo29/.virtualenvs/nexora
+/home/javilo2/.virtualenvs/nexora
 ```
 
 ---
@@ -152,13 +152,13 @@ Y en la sección "Virtualenv" de la Web App, pon:
 
 El webhook le dice a Telegram que envíe los mensajes a tu URL de PythonAnywhere.
 
-Tu URL será: `https://javilo29.pythonanywhere.com/<BOT_TOKEN>`
+Tu URL será: `https://javilo2.pythonanywhere.com/<BOT_TOKEN>`
 
 En la consola Bash, ejecuta (reemplaza los valores):
 
 ```bash
 BOT_TOKEN="tu_token_aqui"
-URL="https://javilo29.pythonanywhere.com/${BOT_TOKEN}"
+URL="https://javilo2.pythonanywhere.com/${BOT_TOKEN}"
 
 curl -X POST "https://api.telegram.org/bot${BOT_TOKEN}/setWebhook" \
      -d "url=${URL}"
@@ -212,7 +212,7 @@ Luego hacer **Reload** desde el Dashboard → Web.
 | Bot no responde | Webhook no seteado | Ejecuta el comando `setWebhook` del Paso 7 |
 | Error 500 en logs | Error en el código | Revisa Error log → busca el traceback |
 | `ModuleNotFoundError` | Dependencia faltante | `pip install --user <modulo>` en Bash |
-| `BOT_TOKEN not found` | `.env` no subido o ruta incorrecta | Verifica que `.env` está en `/home/javilo29/` |
+| `BOT_TOKEN not found` | `.env` no subido o ruta incorrecta | Verifica que `.env` está en `/home/javilo2/` |
 | Webhook rejected | URL incorrecta o sin HTTPS | PythonAnywhere ya provee HTTPS, verifica la URL |
 | `401 Unauthorized` | Token incorrecto | Regenera token en @BotFather |
 
@@ -221,7 +221,7 @@ Luego hacer **Reload** desde el Dashboard → Web.
 ## Estructura de archivos requeridos en PythonAnywhere
 
 ```
-/home/javilo29/
+/home/javilo2/
 ├── .env                          ← Subir manualmente (NO en GitHub)
 └── NEXORA_CORE/
     ├── wsgi.py                   ← Entry point WSGI ✅

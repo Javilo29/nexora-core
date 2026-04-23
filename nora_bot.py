@@ -146,6 +146,20 @@ def run_health_server():
     health_app.run(host="0.0.0.0", port=port, debug=False, use_reloader=False)
 
 
+def check_network():
+    """Realiza un diagnóstico simple de conexión a Internet."""
+    logger.info("🔍 Iniciando diagnóstico de red...")
+    targets = [
+        ("Google", "https://www.google.com"),
+        ("Telegram API", "https://api.telegram.org")
+    ]
+    for name, url in targets:
+        try:
+            response = requests.get(url, timeout=10)
+            logger.info(f"✅ Conexión exitosa con {name} (Status: {response.status_code})")
+        except Exception as e:
+            logger.error(f"❌ Fallo de conexión con {name}: {e}")
+
 # ---------------------------------------------------------------------------
 # Main — Polling 24/7
 # ---------------------------------------------------------------------------
@@ -154,18 +168,29 @@ def main() -> None:
     """Punto de entrada principal. Lanza health server + bot en modo polling."""
     logger.info("🚀 Nora v13.0 | NEXORA_CORE | Iniciando...")
 
+    # Diagnóstico de red inicial
+    check_network()
+
     # Lanzar health server en hilo de fondo
     health_thread = threading.Thread(target=run_health_server, daemon=True)
     health_thread.start()
 
-    # Lanzar bot de Telegram
-    application = Application.builder().token(BOT_TOKEN).build()
+    # Lanzar bot de Telegram con Timeouts aumentados
+    application = (
+        Application.builder()
+        .token(BOT_TOKEN)
+        .read_timeout(60)
+        .connect_timeout(60)
+        .build()
+    )
 
     application.add_handler(CommandHandler("start", start))
     application.add_handler(MessageHandler(filters.PHOTO, handle_photo))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
 
     logger.info("✅ Nora está VIVA y escuchando mensajes.")
+    
+    # run_polling maneja los reintentos internamente
     application.run_polling(drop_pending_updates=True)
 
 
